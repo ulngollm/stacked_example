@@ -11,7 +11,7 @@ class App extends StatelessWidget {
           title: Text('Stacked test'),
         ),
         body: ViewModelBuilder<ViewModel>.reactive(
-          viewModelBuilder: () => ViewModel('some value'),
+          viewModelBuilder: () => ViewModel('get users'),
           onModelReady: (model) {
             model.loadScreen();
           },
@@ -20,17 +20,22 @@ class App extends StatelessWidget {
                 ? CircularProgressIndicator()
                 : Column(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(model.text),
-                      FlatButton.icon(
-                          color: Theme.of(context).primaryColor,
-                          label: Text('Text'),
-                          icon: Icon(Icons.refresh),
-                          onPressed: () {},
-                          onLongPress: () {
-                            print(model.isBusy);
-                          })
-                    ],
+                    children: model.busy(model.users)
+                        ? [
+                            FlatButton.icon(
+                              color: Theme.of(context).primaryColor,
+                              label: Text(model.text),
+                              icon: Icon(Icons.refresh),
+                              onPressed: () {
+                                model.getUsers();
+                              },
+                              onLongPress: () {
+                                print(model.isBusy);
+                              },
+                            )
+                          ]
+                        : List.generate(model.users.length,
+                            (index) => Text(model.users[index])),
                   ),
           ),
         ),
