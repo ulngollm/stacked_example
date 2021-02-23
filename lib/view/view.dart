@@ -11,7 +11,7 @@ class App extends StatelessWidget {
           title: Text('Stacked test'),
         ),
         body: ViewModelBuilder<ViewModel>.reactive(
-          viewModelBuilder: () => ViewModel('get users'),
+          viewModelBuilder: () => ViewModel('start random generator'),
           onModelReady: (model) {
             model.loadScreen();
           },
@@ -20,23 +20,21 @@ class App extends StatelessWidget {
                 ? CircularProgressIndicator()
                 : Column(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: model.busy(model.users)
-                        ? [
-                            FlatButton.icon(
-                              color: Theme.of(context).primaryColor,
-                              label: Text(model.text),
-                              icon: Icon(Icons.refresh),
-                              onPressed: () {
-                                model.getUsers();
-                              },
-                              onLongPress: () {
-                                print(model.isBusy);
-                              },
-                            )
-                          ]
-                        : List.generate(model.users.length,
-                            (index) => Text(model.users[index])),
-                  ),
+                    children: [
+                        if (!model.busy(model.number))
+                          Text(model.number.toString()),
+                        FlatButton.icon(
+                          color: Theme.of(context).primaryColor,
+                          label: Text(model.text),
+                          icon: Icon(Icons.refresh),
+                          onPressed: () {
+                            model.getRandomValue();
+                          },
+                          onLongPress: () {
+                            print(model.busy(model.number));
+                          },
+                        )
+                      ]),
           ),
         ),
       ),
